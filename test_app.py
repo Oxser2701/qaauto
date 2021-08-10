@@ -21,6 +21,7 @@ class TestLoginPage(BaseTest):
         - Click on Sign In button
         - Verify error message
         """
+
         # 1
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.2)
