@@ -56,7 +56,7 @@ class TestLoginPage(BaseTest):
         sleep(0.2)
         self.log.info("User was successfully registered")
 
-        return username_value, password_value, email_value
+        return username_value, email_value, password_value
 
     def test_empty_fields_login(self, driver):
         """
@@ -367,7 +367,7 @@ class TestLoginPage(BaseTest):
         sleep(0.2)
         self.log.info("Open Page")
 
-        username_value, _, password_value = registration
+        username_value, _, password_value, = registration
 
         # Enter correct values
         username = driver.find_element_by_xpath(".//input[@placeholder='Username']")
@@ -384,8 +384,6 @@ class TestLoginPage(BaseTest):
         click.click()
         sleep(0.2)
         self.log.info("Click on the button")
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/profile/testuser")
-        sleep(0.2)
 
         # Verify, that the user logged in successfully
         hello_message = driver.find_element_by_xpath(".//h2")
