@@ -304,7 +304,6 @@ class TestLoginPage(BaseTest):
 
     def test_positive_register_2(self, driver, logout):
         username_value = self.register_user(driver)[0]
-        self.log.info("User was registered")
         """
         - Open page
         - Enter values in the 'Username' field
@@ -313,39 +312,6 @@ class TestLoginPage(BaseTest):
         - Click the button
         - Verify successfully registration
         """
-        # # Open page
-        # driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        # self.log.info("Open Page")
-        # sleep(0.5)
-        #
-        # # Enter values in the 'Username' field
-        # reg_username = driver.find_element_by_xpath(".//input[@placeholder='Pick a username']")
-        # reg_username.clear()
-        # reg_username.send_keys(f"Testuser{self.variety}")
-        # self.log.info("Enter Username")
-        # sleep(2)
-        #
-        # # Enter Password
-        # reg_password = driver.find_element_by_xpath(".//input[@placeholder='Create a password']")
-        # reg_password.clear()
-        # reg_password.send_keys(f"Passw0rd{self.variety}")
-        # self.log.info("Enter a pass")
-        # sleep(2)
-        #
-        # # Enter e-mail
-        # reg_mail = driver.find_element_by_xpath(".//input[@placeholder='you@example.com']")
-        # reg_mail.clear()
-        # reg_mail.send_keys(f"test{self.variety}@mail.com")
-        # self.log.info("Enter a mail")
-        # sleep(2)
-        #
-        # # Click the button
-        # reg_button = driver.find_element_by_xpath(".//div[@class='container py-md-5']//button[@type='submit']")
-        # reg_button.click()
-        # self.log.info("Submit")
-        # # sleep(0.2)
-        # self.register_user(driver)
-        # self.log.info("User was successfully registered")
 
         # Verify successfully registration
         hello_message = driver.find_element_by_xpath(".//h2")
