@@ -14,6 +14,12 @@ class TestLoginPage(BaseTest):
         yield driver
         driver.close()
 
+    @pytest.fixture(scope="function")
+    def logout(self, driver):
+        yield
+        driver.find_element_by_xpath(".//button[contains(text(), 'Sign Out')]").click()
+        sleep(0.5)
+
     def test_empty_fields_login(self, driver):
         """
         - Open start page
@@ -22,23 +28,26 @@ class TestLoginPage(BaseTest):
         - Verify error message
         """
 
-        # 1
+        # Open start page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.2)
         self.log.info("Open Page")
-        # 2
+
+        # Clear pass and login fields
         username = driver.find_element_by_xpath(".//input[@placeholder='Username']")
         username.clear()
         password = driver.find_element_by_xpath(".//input[@placeholder='Password']")
         password.clear()
         sleep(0.2)
         self.log.info("Clear all fields")
-        # 3
+
+        # Click on Sign In button
         click = driver.find_element_by_xpath(".//button[contains(text(), 'Sign In')]")
         click.click()
         sleep(0.2)
         self.log.info("Click on the button")
-        # 4
+
+        # Verify error message
         message = driver.find_element_by_xpath(".//div[contains(text(), 'Invalid username / password')]")
         assert message.text == 'Invalid username / password'
         sleep(0.2)
@@ -51,11 +60,12 @@ class TestLoginPage(BaseTest):
         - Click on Sign In button
         - Verify error message
         """
-        # 1
+        # Open start page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.2)
         self.log.info("Open Page")
-        # 2
+
+        # Enter incorrect values
         username = driver.find_element_by_xpath(".//input[@placeholder='Username']")
         username.clear()
         username.send_keys("user")
@@ -64,17 +74,20 @@ class TestLoginPage(BaseTest):
         password.send_keys("pass1234567890")
         sleep(0.2)
         self.log.info("Enter incorrect values")
-        # 3
+
+        # Click on Sign In button
         click = driver.find_element_by_xpath(".//button[contains(text(), 'Sign In')]")
         click.click()
         sleep(0.2)
         self.log.info("Click on the button")
-        # 4
+
+        # Verify error message
         message = driver.find_element_by_xpath(".//div[contains(text(), 'Invalid username / password')]")
         assert message.text == 'Invalid username / password'
         sleep(0.2)
         self.log.info("Error message")
 
+    def test_positive_register(self, driver):
         """
         - Open page
         - Enter values in the 'Username' field
@@ -83,37 +96,40 @@ class TestLoginPage(BaseTest):
         - Click the button
         - Verify successfully registration
         """
-        # 1
-
-    def test_positive_register(self, driver):
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.2)
         self.log.info("Open Page")
         sleep(0.5)
-        # 2
+
+        # Enter values in the 'Username' field
         reg_username = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='Pick a username']")
         reg_username.clear()
         reg_username.send_keys("testuser")
         self.log.info("Enter Username")
         sleep(0.2)
-        # 3
+
+        # Enter Password
         reg_password = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='Create a password']")
         reg_password.clear()
         reg_password.send_keys("123123123123")
         self.log.info("Enter a pass")
         sleep(0.2)
-        # 4
+
+        # Enter e-mail
         reg_mail = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='you@example.com']")
         reg_mail.clear()
         reg_mail.send_keys("test2@test.com")
         self.log.info("Enter a mail")
         sleep(0.2)
-        # 5
-        reg_button = driver.find_element_by_xpath(".//div[@class='container py-md-5']//button[@type='submit']")
+
+        # Click the button
+        reg_button = driver.find_element_by_xpath(".//button[@type='submit']")
         reg_button.click()
         self.log.info("Submit")
         sleep(0.2)
-        # 6
+
+        # Verify successfully registration
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/profile/testuser")
         sleep(0.2)
         self.log.info("Click on profile")
@@ -122,120 +138,195 @@ class TestLoginPage(BaseTest):
         sleep(0.5)
 
     def test_negative_register_username(self, driver):
+        """
+        - Open page
+        - Enter restricted symbols in the 'Username' field
+        - Verify error message
+        """
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.5)
         self.log.info("Open Page")
         sleep(0.2)
-        negative_username = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='Pick a username']")
+
+        # Enter restricted symbols in the 'Username' field
+        negative_username = driver.find_element_by_xpath(".//input[@placeholder='Pick a username']")
         negative_username.clear()
         negative_username.send_keys("@#$@^@&")
         sleep(1)
         self.log.info("Negative username values")
+        # Verify error message
         message_1 = driver.find_element_by_xpath(".//div//div[contains(text(), 'Username can only contain letters and numbers.')]")
         assert message_1.text == "Username can only contain letters and numbers."
         self.log.info("Error message")
         sleep(0.5)
 
     def test_negative_register_mail(self, driver):
+        """
+        - Open page
+        - Enter incorrect e-mail (without "@")
+        - Verify error message
+        """
+
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.5)
         self.log.info("Open Page")
         sleep(0.2)
-        negative_mail = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='you@example.com']")
+
+        # Enter incorrect e-mail (without "@")
+        negative_mail = driver.find_element_by_xpath(".//input[@placeholder='you@example.com']")
         negative_mail.clear()
         negative_mail.send_keys("asdfg.hss")
         sleep(1)
         self.log.info("Negative e-mail values")
+
+        # Verify error message
         message_2 = driver.find_element_by_xpath(".//div//div[contains(text(), 'You must provide a valid email address.')]")
         assert message_2.text == "You must provide a valid email address."
         self.log.info("Error message")
         sleep(0.5)
 
     def test_negative_register_pass(self, driver):
+        """
+        - Open page
+        - Enter incorrect Password
+        - Verify error message
+        """
+
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.5)
         self.log.info("Open Page")
         sleep(0.2)
-        negative_password = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='Create a password']")
+        # Enter incorrect Password
+        negative_password = driver.find_element_by_xpath(".//input[@placeholder='Create a password']")
         negative_password.clear()
         negative_password.send_keys("123")
         sleep(1)
         self.log.info("Negative password values")
+
+        # Verify error message
         message_3 = driver.find_element_by_xpath(".//div//div[contains(text(), 'Password must be at least 12 characters.')]")
         assert message_3.text == "Password must be at least 12 characters."
         self.log.info("Error message")
         sleep(0.5)
 
     def test_negative_register_existing_mail(self, driver):
+        """
+        - Open page
+        - Enter existing e-mail
+        - Verify error message
+        """
+
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.5)
         self.log.info("Open Page")
         sleep(0.2)
+
+        # Enter existing e-mail
         negative_existing_mail = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='you@example.com']")
         negative_existing_mail.clear()
         negative_existing_mail.send_keys("test@test.com")
         sleep(1)
         self.log.info("Enter existing email")
+
+        # Verify error message
         message_4 = driver.find_element_by_xpath(".//div//div[contains(text(), 'That email is already being used.')]")
         assert message_4.text == "That email is already being used."
         self.log.info("Error message")
         sleep(0.5)
 
     def test_negative_register_existing_name(self, driver):
+        """
+        - Open page
+        - Enter existing name
+        - Verify error message
+        """
+
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.5)
         self.log.info("Open Page")
         sleep(0.2)
+
+        # Enter existing name
         negative_existing_name = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='Pick a username']")
         negative_existing_name.clear()
         negative_existing_name.send_keys("testuser")
         sleep(1)
         self.log.info("Enter existing name")
+
+        # Verify error message
         message_4 = driver.find_element_by_xpath(".//div//div[contains(text(), 'That username is already taken.')]")
         assert message_4.text == "That username is already taken."
         self.log.info("Error message")
         sleep(0.5)
 
-    def test_positive_register_2(self, driver):
+    def test_positive_register_2(self, driver, logout):
+        username_test = f"Testuser{self.variety}"
+        """
+        - Open page
+        - Enter values in the 'Username' field
+        - Enter e-mail
+        - Enter Password
+        - Click the button
+        - Verify successfully registration
+        """
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
-        sleep(0.2)
         self.log.info("Open Page")
         sleep(0.5)
-        # 2
-        reg_username = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='Pick a username']")
+
+        # Enter values in the 'Username' field
+        reg_username = driver.find_element_by_xpath(".//input[@placeholder='Pick a username']")
         reg_username.clear()
-        reg_username.send_keys("testuser2")
+        reg_username.send_keys(f"Testuser{self.variety}")
         self.log.info("Enter Username")
-        sleep(0.2)
-        # 3
-        reg_password = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='Create a password']")
+        sleep(2)
+
+        # Enter Password
+        reg_password = driver.find_element_by_xpath(".//input[@placeholder='Create a password']")
         reg_password.clear()
-        reg_password.send_keys("123123123123")
+        reg_password.send_keys(f"Passw0rd{self.variety}")
         self.log.info("Enter a pass")
-        sleep(0.2)
-        # 4
-        reg_mail = driver.find_element_by_xpath(".//div[@class='container py-md-5']//form[@action='/register']//input[@placeholder='you@example.com']")
+        sleep(2)
+
+        # Enter e-mail
+        reg_mail = driver.find_element_by_xpath(".//input[@placeholder='you@example.com']")
         reg_mail.clear()
-        reg_mail.send_keys("test3@test.com")
+        reg_mail.send_keys(f"test{self.variety}@mail.com")
         self.log.info("Enter a mail")
-        sleep(0.2)
-        # 5
+        sleep(2)
+
+        # Click the button
         reg_button = driver.find_element_by_xpath(".//div[@class='container py-md-5']//button[@type='submit']")
         reg_button.click()
         self.log.info("Submit")
         sleep(0.2)
-        # 6
-        driver.get("https://qa-complex-app-for-testing.herokuapp.com/profile/testuser2")
-        sleep(0.2)
-        self.log.info("Click on profile")
-        profile_user = driver.find_element_by_xpath(".//div[@class ='container py-md-5 container--narrow']//h2[contains(text(), 'testuser2')]")
-        assert profile_user.text == 'testuser2'
+
+        # Verify successfully registration
+        hello_message = driver.find_element_by_xpath(".//h2")
+        assert username_test.lower() in hello_message.text
+        assert hello_message.text == f"Hello {username_test.lower()}, your feed is empty."
+        self.log.info("Success")
         sleep(0.5)
 
-    def test_login(self, driver):
+    def test_login(self, driver, logout):
+        """
+        - Open page
+        - Enter correct values
+        - Click the button
+        - Verify, that the user logged in successfully
+        """
+
+        # Open page
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/")
         sleep(0.2)
         self.log.info("Open Page")
+
+        # Enter correct values
         username = driver.find_element_by_xpath(".//input[@placeholder='Username']")
         username.clear()
         username.send_keys("testuser")
@@ -244,13 +335,18 @@ class TestLoginPage(BaseTest):
         password.send_keys("123123123123")
         sleep(0.2)
         self.log.info("Enter correct values")
+
+        # Click the button
         click = driver.find_element_by_xpath(".//button[contains(text(), 'Sign In')]")
         click.click()
         sleep(0.2)
         self.log.info("Click on the button")
         driver.get("https://qa-complex-app-for-testing.herokuapp.com/profile/testuser")
         sleep(0.2)
+
+        # Verify, that the user logged in successfully
         self.log.info("Click on profile")
         profile_user = driver.find_element_by_xpath(".//div[@class ='container py-md-5 container--narrow']//h2[contains(text(), 'testuser')]")
         assert profile_user.text == 'testuser'
+        self.log.info("Successfully logged in")
         sleep(0.5)
