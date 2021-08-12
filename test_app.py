@@ -350,3 +350,5 @@ class TestLoginPage(BaseTest):
         assert profile_user.text == 'testuser'
         self.log.info("Successfully logged in")
         sleep(0.5)
+
+        pass
