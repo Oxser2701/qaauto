@@ -54,9 +54,11 @@ class TestLoginPage(BaseTest):
         # Enter e-mail
         email_value = f"test{self.variety}@mail.com"
         base_helper.fill_input_field(by=By.XPATH, locator=LoginPageConstant.SIGN_UP_EMAIL_XPATH, value=email_value)
+        sleep(1)
 
         # Click the button
-        driver.find_element_by_xpath(LoginPageConstant.SIGN_UP_BUTTON_XPATH).click()
+        click = driver.find_element_by_xpath(LoginPageConstant.SIGN_UP_BUTTON_XPATH)
+        click.click()
         sleep(2)
         self.log.info("User was successfully registered")
 
@@ -282,7 +284,7 @@ class TestLoginPage(BaseTest):
         # Click the button
         sign_in_button = base_helper.find_by_text(text=LoginPageConstant.SIGN_IN_BUTTON_TEXT, element_tag="button")
         sign_in_button.click()
-        sleep(0.2)
+        sleep(1)
         self.log.info("Click on the button")
 
         # Verify, that the user logged in successfully
