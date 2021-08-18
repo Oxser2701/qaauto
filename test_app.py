@@ -17,7 +17,6 @@ class TestLoginPage(BaseTest):
     def driver(self):
         driver = webdriver.Chrome(executable_path=BaseConstant.DRIVER_PATH)
         yield driver
-        # driver.implicitly_wait(5)
         driver.close()
 
     @pytest.fixture(scope="function")
