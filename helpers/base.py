@@ -29,3 +29,12 @@ class BaseHelpers:
     def find_by_text(self, text, element_tag="*"):
         """Finding the elements using XPATH"""
         return self.wait_until_element_found(By.XPATH, f".//{element_tag}[contains(text(), '{text}')]")
+
+
+class UserData:
+    """Contains user data"""
+
+    def __init__(self, username="", email="", password=""):
+        self.username = username
+        self.email = email
+        self.password = password
